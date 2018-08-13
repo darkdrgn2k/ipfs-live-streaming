@@ -33,7 +33,7 @@ while true; do
     if ! [ -z "$(lsof ${nextfile} | grep ffmpeg)" ]; then
       # Wait for file to finish writing
       # If not finished in 45 seconds something is wrong, timeout
-      inotifywait -e close_write $nextfile -t 45
+      inotifywait -e close_write $nextfile -t 45 > /dev/null 2>&1
     fi
 
     # Grab the timecode from the m3u8 file so we can add it to the log
@@ -91,7 +91,7 @@ while true; do
 
       # Add m3u8 file to IPFS and IPNS publish (uncomment to enable)
       #m3u8hash=$(ipfs add current.m3u8 | awk '{print $2}')
-      #ipfs name publish --timeout=5s $m3u8hash &
+      #ipfs name publish --timeout=5s $m3u8hash > /dev/null 2>&1 &
 
       # Copy files to web server
       cp current.m3u8 /var/www/html/live.m3u8
