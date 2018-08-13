@@ -22,8 +22,8 @@ if (getQueryVariable('url')) {
   m3u8_ipfs = getQueryVariable('url');
 }
 
-if (getQueryVariable('ipfs_gateway_self')) {
-  ipfs_gateway_self = getQueryVariable('ipfs_gateway_self');
+if (getQueryVariable('ipfs-server')) {
+  ipfs_gateway_self = getQueryVariable('ipfs-server');
 }
 
 var live = videojs('live');
@@ -52,7 +52,9 @@ function ipfsStream() {
   loadStream();
   videojs.Hls.xhr.beforeRequest = function(options) {
     // Replace IPFS gateway of origin with that of this node
-    options.uri = options.uri.replace(ipfs_gateway_origin, ipfs_gateway_self);
+    var newURL = new URL(options.uri);
+    newURL.hostname = ipfs_gateway_self;
+    options.uri = newURL.href;
     if (options.uri.indexOf('/ipfs/')) {
       document.getElementById('loadingTitle').innerHTML = 'Located stream via IPFS';
       document.getElementById('msg').innerHTML = 'Downloading video content...';
